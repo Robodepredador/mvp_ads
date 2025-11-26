@@ -1,0 +1,19 @@
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-card {
+  width: 380px;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.15) !important;
+  text-align: center;
+}
+
+.input {
+  width: 100%;
+  margin-bottom: 15px;
+}

@@ -1,0 +1,24 @@
+<h2>Compras</h2>
+
+<mat-card>
+  <button mat-raised-button color="primary" (click)="cargarPendientes()">
+    Cargar Solicitudes Pendientes
+  </button>
+</mat-card>
+
+<div *ngFor="let s of solicitudes">
+  <mat-card>
+    <p><strong>Solicitud:</strong> {{ s.id }}</p>
+
+    <button mat-raised-button color="accent" (click)="generarOrden(s.id)">
+      Generar Orden de Compra
+    </button>
+  </mat-card>
+</div>
+
+<div *ngIf="ordenGenerada">
+  <mat-card>
+    <h3>Orden Generada</h3>
+    <pre>{{ ordenGenerada | json }}</pre>
+  </mat-card>
+</div>

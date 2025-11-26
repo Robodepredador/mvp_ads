@@ -1,0 +1,22 @@
+<h2>Programación</h2>
+
+<mat-card>
+  <button mat-raised-button color="primary" (click)="crearRequerimiento()">
+    Crear Requerimiento
+  </button>
+
+  <div *ngIf="reqId" class="section">
+    <p><strong>Requerimiento creado:</strong> {{ reqId }}</p>
+
+    <button mat-raised-button color="accent" (click)="programar()">
+      Programar
+    </button>
+  </div>
+</mat-card>
+
+<div *ngIf="respuesta" class="section">
+  <mat-card>
+    <h3>Resultado</h3>
+    <pre>{{ respuesta | json }}</pre>
+  </mat-card>
+</div>

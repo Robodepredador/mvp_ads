@@ -1,0 +1,28 @@
+<h2>Distribución</h2>
+
+<mat-card>
+  <button mat-raised-button color="primary" (click)="cargarPendientes()">
+    Cargar Órdenes de Distribución
+  </button>
+</mat-card>
+
+<div *ngFor="let od of ordenes">
+  <mat-card>
+    <p><strong>Orden Distribución:</strong> {{ od.id }}</p>
+
+    <button mat-raised-button color="accent" (click)="asignar(od.id)">
+      Asignar Vehículo
+    </button>
+  </mat-card>
+</div>
+
+<div *ngIf="seguimiento">
+  <mat-card>
+    <h3>Vehículo Asignado</h3>
+    <pre>{{ seguimiento | json }}</pre>
+
+    <button mat-raised-button color="warn" (click)="entregar(seguimiento.id)">
+      Marcar Entregado
+    </button>
+  </mat-card>
+</div>

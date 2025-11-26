@@ -1,0 +1,16 @@
+# Spring Boot
+farmaceutica-mvp/target/
+farmaceutica-mvp/.idea/
+farmaceutica-mvp/.project
+farmaceutica-mvp/.classpath
+
+# Angular
+front-mvp/node_modules/
+front-mvp/dist/
+front-mvp/.angular/
+front-mvp/.vscode/
+
+# General
+*.log
+.DS_Store
+Thumbs.db

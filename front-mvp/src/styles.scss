@@ -1,0 +1,39 @@
+/* Fondo general */
+body {
+  background: #f5f7fa;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  height: 100vh;
+}
+
+/* Contenedor principal para las vistas */
+.page-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* Títulos */
+h1, h2, h3 {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Separación entre bloques */
+.section {
+  margin-top: 20px;
+}
+
+/* Cards Material (Estilizado) */
+.mat-mdc-card {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 12px !important;
+  box-shadow: 0px 3px 12px rgba(0,0,0,0.08) !important;
+  background-color: white;
+}
+
+/* Botones */
+button + button {
+  margin-left: 8px;
+}

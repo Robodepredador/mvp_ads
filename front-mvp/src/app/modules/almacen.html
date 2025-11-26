@@ -1,0 +1,24 @@
+<h2>Almacén - Recepción</h2>
+
+<mat-card>
+  <button mat-raised-button color="primary" (click)="cargarPendientes()">
+    Cargar Órdenes de Compra
+  </button>
+</mat-card>
+
+<div *ngFor="let oc of ordenes">
+  <mat-card>
+    <p><strong>Orden Compra:</strong> {{ oc.id }}</p>
+
+    <button mat-raised-button color="warn" (click)="recibir(oc.id)">
+      Recibir Productos
+    </button>
+  </mat-card>
+</div>
+
+<div *ngIf="mensaje">
+  <mat-card>
+    <h3>Resultado</h3>
+    <pre>{{ mensaje }}</pre>
+  </mat-card>
+</div>
