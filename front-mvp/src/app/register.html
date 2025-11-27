@@ -1,0 +1,51 @@
+<div class="auth-container">
+  <div class="auth-form-section">
+    <div class="form-content">
+      <header>
+        <h1>Crear cuenta</h1>
+        <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+      </header>
+
+      <form>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre completo</mat-label>
+          <input matInput [(ngModel)]="username" name="username" placeholder="Usuario Programación" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" placeholder="usuario@mail.com">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" [(ngModel)]="password" name="password" required>
+        </mat-form-field>
+
+        <div class="form-options">
+          <mat-checkbox>Acepto los términos y condiciones</mat-checkbox>
+        </div>
+
+        <button mat-raised-button color="primary" class="full-width action-button" type="button">
+          Registrarme
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="auth-welcome-section">
+    <div class="welcome-content">
+      <h2>Conecta todo tu equipo</h2>
+      <p>
+        Accede a los módulos de programación, compras y distribución desde un solo lugar.
+        Registra tu cuenta y comienza a trabajar con procesos trazables y colaborativos.
+      </p>
+      <ul>
+        <li>Seguimiento completo de requerimientos</li>
+        <li>Alertas de inventario crítico</li>
+        <li>Integración con almacén y distribución</li>
+      </ul>
+    </div>
+  </div>
+</div>
+

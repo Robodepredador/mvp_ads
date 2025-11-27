@@ -1,1 +1,75 @@
+<div class="dashboard">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Cadena operativa</p>
+      <h1>Panel principal</h1>
+      <p class="lead">
+        Visualiza el estado global y accede rápidamente a cada módulo. Agrupamos la
+        información por tareas para que sepas qué atender primero.
+      </p>
+      <div class="hero-actions">
+        <button mat-raised-button color="primary" (click)="go('/programacion')">
+          Atender requerimientos
+        </button>
+        <button mat-stroked-button color="primary" (click)="go('/dashboard')">
+          Ver reportes
+        </button>
+      </div>
+    </div>
+    <div class="hero-summary">
+      <div class="stat-card" *ngFor="let stat of stats">
+        <p class="stat-label">{{ stat.label }}</p>
+        <h3>{{ stat.value }}</h3>
+        <span class="stat-meta">{{ stat.meta }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="modules">
+    <header>
+      <div>
+        <p class="eyebrow">Navegación guiada</p>
+        <h2>Accesos rápidos</h2>
+      </div>
+      <span class="hint">Selecciona un módulo para continuar el flujo</span>
+    </header>
+    <div class="module-grid">
+      <article class="module-card" *ngFor="let module of modules">
+        <div class="module-icon">
+          <mat-icon>{{ module.icon }}</mat-icon>
+        </div>
+        <div class="module-info">
+          <h3>{{ module.title }}</h3>
+          <p>{{ module.description }}</p>
+        </div>
+        <div class="module-actions">
+          <button mat-stroked-button color="primary" (click)="go(module.route)">
+            Abrir
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="guidelines">
+    <header>
+      <h2>Buenas prácticas para el turno</h2>
+      <span>Aplicamos heurísticas de visibilidad, consistencia y prevención de errores.</span>
+    </header>
+    <ul>
+      <li>
+        <strong>Prioriza por estado:</strong> atiende primero los requerimientos en
+        “Pendiente” para reducir tiempos de espera.
+      </li>
+      <li>
+        <strong>Confirma antes de finalizar:</strong> verifica que todos los productos tengan
+        decisión antes de cerrar un requerimiento.
+      </li>
+      <li>
+        <strong>Anticipa inventario:</strong> revisa los lotes disponibles antes de iniciar una
+        compra para evitar reprocesos.
+      </li>
+    </ul>
+  </section>
+</div>
 <p>dashboard works!</p>

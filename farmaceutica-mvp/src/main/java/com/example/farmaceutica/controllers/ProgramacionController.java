@@ -4,6 +4,8 @@ import com.example.farmaceutica.domain.*;
 import com.example.farmaceutica.services.ProgramacionService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/programacion")
 @CrossOrigin
@@ -39,16 +41,33 @@ public class ProgramacionController {
         return programacionService.consultarLotesPorProducto(productoId);
     }
 
+    @GetMapping("/resumen")
+    public ProgramacionService.ResumenProgramacion resumen() {
+        return programacionService.obtenerResumen();
+    }
+
+    @GetMapping("/requerimientos/{id}/historial")
+    public List<ProgramacionService.DecisionRegistro> historial(@PathVariable Long id) {
+        return programacionService.obtenerHistorial(id);
+    }
+
     // 5. Registrar decisión de distribución
     @PostMapping("/decidir/distribucion")
-    public String registrarDecisionDistribucion(@RequestParam Long requerimientoId, @RequestParam Long productoId, @RequestParam int cantidad, @RequestParam Long loteId) {
-        return programacionService.registrarDecisionDistribucion(requerimientoId, productoId, cantidad, loteId);
+    public String registrarDecisionDistribucion(@RequestParam Long requerimientoId,
+                                                @RequestParam Long productoId,
+                                                @RequestParam int cantidad,
+                                                @RequestParam Long loteId,
+                                                @RequestParam(required = false) String motivo) {
+        return programacionService.registrarDecisionDistribucion(requerimientoId, productoId, cantidad, loteId, motivo);
     }
 
     // 6. Registrar decisión de compra
     @PostMapping("/decidir/compra")
-    public String registrarDecisionCompra(@RequestParam Long requerimientoId, @RequestParam Long productoId, @RequestParam int cantidad) {
-        return programacionService.registrarDecisionCompra(requerimientoId, productoId, cantidad);
+    public String registrarDecisionCompra(@RequestParam Long requerimientoId,
+                                          @RequestParam Long productoId,
+                                          @RequestParam int cantidad,
+                                          @RequestParam(required = false) String motivo) {
+        return programacionService.registrarDecisionCompra(requerimientoId, productoId, cantidad, motivo);
     }
 
     // 7. Finalizar programación

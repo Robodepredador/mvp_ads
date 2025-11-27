@@ -2,6 +2,8 @@ package com.example.farmaceutica.domain;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "detalle_solicitud_compra")
 public class DetalleSolicitudCompra {
@@ -24,6 +26,16 @@ public class DetalleSolicitudCompra {
 
     @Column(precision = 12, scale = 2)
     private java.math.BigDecimal precioReferencial;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal precioNegociado;
+
+    @ManyToOne
+    @JoinColumn(name = "proveedor_id")
+    private Proveedor proveedorSeleccionado;
+
+    @Column(length = 255)
+    private String motivoDecision;
 
     @Column
     private Long createdBy;
@@ -72,6 +84,12 @@ public class DetalleSolicitudCompra {
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public java.math.BigDecimal getPrecioReferencial() { return precioReferencial; }
     public void setPrecioReferencial(java.math.BigDecimal precioReferencial) { this.precioReferencial = precioReferencial; }
+    public BigDecimal getPrecioNegociado() { return precioNegociado; }
+    public void setPrecioNegociado(BigDecimal precioNegociado) { this.precioNegociado = precioNegociado; }
+    public Proveedor getProveedorSeleccionado() { return proveedorSeleccionado; }
+    public void setProveedorSeleccionado(Proveedor proveedorSeleccionado) { this.proveedorSeleccionado = proveedorSeleccionado; }
+    public String getMotivoDecision() { return motivoDecision; }
+    public void setMotivoDecision(String motivoDecision) { this.motivoDecision = motivoDecision; }
     public Long getCreatedBy() { return createdBy; }
     public void setCreatedBy(Long createdBy) { this.createdBy = createdBy; }
     public Long getUpdatedBy() { return updatedBy; }

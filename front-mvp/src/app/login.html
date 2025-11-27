@@ -1,19 +1,61 @@
-<div class="login-wrapper">
-  <mat-card class="login-card">
-    <h2>Iniciar Sesión</h2>
+<!-- login.component.html -->
 
-    <mat-form-field appearance="fill" class="input">
-      <mat-label>Usuario</mat-label>
-      <input matInput [(ngModel)]="username" />
-    </mat-form-field>
+<div class="login-container">
+  <!-- Columna Izquierda: Formulario de Login -->
+  <div class="login-form-section">
+    <div class="form-content">
+      <header>
+        <h1>Ingresar</h1>
+        <p>No tienes cuenta? <a routerLink="/registro">Regístrate</a></p>
+      </header>
 
-    <mat-form-field appearance="fill" class="input">
-      <mat-label>Contraseña</mat-label>
-      <input matInput type="password" [(ngModel)]="password" />
-    </mat-form-field>
+      <form (ngSubmit)="login()">
+        <!-- Campo de Correo Electrónico -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo Electrónico</mat-label>
+          <input matInput type="email" [(ngModel)]="username" name="username" required>
+        </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="login()">
-      Ingresar
-    </button>
-  </mat-card>
+        <!-- Campo de Contraseña -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Opciones: Recordarme y Olvidé Contraseña -->
+        <div class="form-options">
+          <mat-checkbox>Recordarme</mat-checkbox>
+          <a routerLink="/olvide-mi-contrasena">Olvidé mi contraseña</a>
+        </div>
+
+        <!-- Botón de Iniciar Sesión -->
+        <button mat-raised-button color="primary" class="full-width login-button" type="submit">
+          Iniciar Sesión
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Columna Derecha: Bienvenida -->
+  <div class="login-welcome-section">
+    <div class="welcome-content">
+      <h2>Bienvenido a Clinicapp</h2>
+      <p>
+        Nos especializamos en ayudar a médicos y odontólogos a construir un
+        ecosistema de trabajo bien estructurado. Únete a nosotros y déjanos
+        ayudarte a crear el futuro de tu empresa.
+      </p>
+      <div class="user-avatars">
+        <!-- Puedes reemplazar esto con imágenes reales -->
+        <img src="https://via.placeholder.com/40" alt="User 1">
+        <img src="https://via.placeholder.com/40" alt="User 2">
+        <img src="https://via.placeholder.com/40" alt="User 3">
+        <img src="https://via.placeholder.com/40" alt="User 4">
+      </div>
+      <p>Más de 1700 personas se han unido a nuestra plataforma, ahora es tu turno.</p>
+    </div>
+  </div>
 </div>

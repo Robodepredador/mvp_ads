@@ -67,7 +67,7 @@ public class ProgramacionService {
 
     // 4. Registrar decisión del usuario para un producto
     @Transactional
-    public String registrarDecisionDistribucion(Long requerimientoId, Long productoId, int cantidad, Long loteId) {
+    public String registrarDecisionDistribucion(Long requerimientoId, Long productoId, int cantidad, Long loteId, String motivo) {
         if (cantidad <= 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor a cero");
         }
@@ -93,12 +93,13 @@ public class ProgramacionService {
         detalle.setProducto(producto);
         detalle.setCantidad(cantidad);
         detalle.setLote(lote);
+        detalle.setMotivoDecision(motivo);
         detOrdDistRepo.save(detalle);
         return buildMensajeEstado("Distribución registrada", requerimiento);
     }
 
     @Transactional
-    public String registrarDecisionCompra(Long requerimientoId, Long productoId, int cantidad) {
+    public String registrarDecisionCompra(Long requerimientoId, Long productoId, int cantidad, String motivo) {
         if (cantidad <= 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor a cero");
         }
@@ -117,6 +118,7 @@ public class ProgramacionService {
         detalle.setProducto(producto);
         detalle.setCantidad(cantidad);
         detalle.setPrecioReferencial(producto.getPrecioReferencial());
+        detalle.setMotivoDecision(motivo);
         detSolCompraRepo.save(detalle);
         return buildMensajeEstado("Solicitud de compra registrada", requerimiento);
     }
@@ -195,5 +197,60 @@ public class ProgramacionService {
             return;
         }
         suma.merge(producto.getId(), cantidad, (a, b) -> Integer.valueOf(a + b));
+    }
+
+    public ResumenProgramacion obtenerResumen() {
+        java.util.List<Requerimiento> requerimientos = reqRepo.findAll();
+        long total = requerimientos.size();
+        long pendientes = requerimientos.stream().filter(r -> "PENDIENTE".equalsIgnoreCase(r.getEstado())).count();
+        long parciales = requerimientos.stream().filter(r -> "PARCIAL".equalsIgnoreCase(r.getEstado())).count();
+        long programados = requerimientos.stream().filter(r -> "PROGRAMADO".equalsIgnoreCase(r.getEstado())).count();
+        return new ResumenProgramacion(total, pendientes, parciales, programados);
+    }
+
+    public java.util.List<DecisionRegistro> obtenerHistorial(Long requerimientoId) {
+        java.util.List<DecisionRegistro> registros = new java.util.ArrayList<>();
+
+        detOrdDistRepo.findByOrdenDistribucion_Requerimiento_Id(requerimientoId)
+                .forEach(det -> registros.add(DecisionRegistro.fromDistribucion(det)));
+
+        detSolCompraRepo.findBySolicitudCompra_Requerimiento_Id(requerimientoId)
+                .forEach(det -> registros.add(DecisionRegistro.fromCompra(det)));
+
+        registros.sort(java.util.Comparator.comparing(DecisionRegistro::fecha));
+        return registros;
+    }
+
+    public record ResumenProgramacion(long total, long pendientes, long parciales, long programados) {}
+
+    public record DecisionRegistro(
+            String tipo,
+            Long productoId,
+            String producto,
+            Integer cantidad,
+            String motivo,
+            java.time.LocalDateTime fecha
+    ) {
+        static DecisionRegistro fromDistribucion(DetalleOrdenDistribucion det) {
+            return new DecisionRegistro(
+                    "DISTRIBUCION",
+                    det.getProducto().getId(),
+                    det.getProducto().getNombre(),
+                    det.getCantidad(),
+                    det.getMotivoDecision(),
+                    det.getUpdatedAt()
+            );
+        }
+
+        static DecisionRegistro fromCompra(DetalleSolicitudCompra det) {
+            return new DecisionRegistro(
+                    "COMPRA",
+                    det.getProducto().getId(),
+                    det.getProducto().getNombre(),
+                    det.getCantidad(),
+                    det.getMotivoDecision(),
+                    det.getUpdatedAt()
+            );
+        }
     }
 }

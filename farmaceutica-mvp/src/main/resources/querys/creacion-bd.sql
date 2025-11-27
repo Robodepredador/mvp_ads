@@ -69,7 +69,11 @@ CREATE TABLE detalle_requerimiento (
     requerimiento_id INT NOT NULL REFERENCES requerimientos(id) ON DELETE CASCADE,
     producto_id INT NOT NULL REFERENCES productos(id),
     cantidad INT NOT NULL CHECK (cantidad > 0),
-    observaciones TEXT
+    observaciones TEXT,
+    created_by INT REFERENCES usuarios(id),
+    updated_by INT REFERENCES usuarios(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Solicitud de compra
@@ -89,7 +93,10 @@ CREATE TABLE detalle_solicitud_compra (
     solicitud_compra_id INT NOT NULL REFERENCES solicitud_compra(id) ON DELETE CASCADE,
     producto_id INT NOT NULL REFERENCES productos(id),
     cantidad INT NOT NULL CHECK (cantidad > 0),
-    precio_referencial NUMERIC(12,2) CHECK (precio_referencial >= 0)
+    precio_referencial NUMERIC(12,2) CHECK (precio_referencial >= 0),
+    precio_negociado NUMERIC(12,2) CHECK (precio_negociado >= 0),
+    proveedor_id INT REFERENCES proveedores(id),
+    motivo_decision VARCHAR(255)
 );
 
 -- Orden de compra
@@ -177,7 +184,8 @@ CREATE TABLE detalle_orden_distribucion (
     orden_distribucion_id INT NOT NULL REFERENCES orden_distribucion(id) ON DELETE CASCADE,
     producto_id INT NOT NULL REFERENCES productos(id),
     cantidad INT NOT NULL CHECK (cantidad > 0),
-    lote_id INT REFERENCES lotes_producto(id)
+    lote_id INT REFERENCES lotes_producto(id),
+    motivo_decision VARCHAR(255)
 );
 
 -- Vehículos

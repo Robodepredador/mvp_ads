@@ -1,0 +1,124 @@
+.auth-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #fff;
+}
+
+.auth-form-section {
+  flex-basis: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+
+  .form-content {
+    max-width: 420px;
+    width: 100%;
+
+    header {
+      margin-bottom: 30px;
+
+      h1 {
+        font-size: 2.4rem;
+        margin: 0;
+      }
+
+      p {
+        color: #666;
+
+        a {
+          color: #0d8cff;
+          text-decoration: none;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.auth-welcome-section {
+  flex-basis: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background-color: #0d8cff;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+
+  .welcome-content {
+    max-width: 460px;
+    z-index: 2;
+
+    h2 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    ul {
+      margin-top: 24px;
+      padding-left: 20px;
+
+      li {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &::before {
+    width: 420px;
+    height: 420px;
+    top: -120px;
+    right: -130px;
+  }
+
+  &::after {
+    width: 560px;
+    height: 560px;
+    bottom: -200px;
+    left: -150px;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-options {
+  margin: 10px 0 20px;
+}
+
+.action-button {
+  height: 50px;
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+  }
+
+  .auth-welcome-section {
+    display: none;
+  }
+
+  .auth-form-section {
+    flex-basis: 100%;
+  }
+}
+

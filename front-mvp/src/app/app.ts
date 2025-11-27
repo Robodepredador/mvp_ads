@@ -63,7 +63,10 @@ export class App {
 
   get showLogin() {
     const url = this.router.url;
-    return url === '/' || url.startsWith('/login');
+    return url === '/' ||
+      url.startsWith('/login') ||
+      url.startsWith('/registro') ||
+      url.startsWith('/olvide-mi-contrasena');
   }
 
   menu() {

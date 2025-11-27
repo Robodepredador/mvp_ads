@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 interface Producto {
   id: number;
@@ -37,121 +38,9 @@ interface FormDecision {
 @Component({
   selector: 'app-programacion',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, FormsModule, MatButtonModule],
-  template: `
-    <section class="programacion">
-      <div class="panel">
-        <div class="panel-header">
-          <h2>Requerimientos pendientes</h2>
-          <button mat-stroked-button color="primary" (click)="cargarRequerimientos()" [disabled]="cargando">
-            Refrescar
-          </button>
-        </div>
-
-        <div *ngIf="!requerimientos.length && !cargando" class="empty">
-          No se encontraron requerimientos.
-        </div>
-
-        <ul class="req-list">
-          <li *ngFor="let req of requerimientos" [class.activo]="req.id === requerimiento?.id">
-            <div>
-              <strong>#{{ req.id }}</strong> · Estado: {{ req.estado }}
-            </div>
-            <button mat-button color="primary" (click)="verDetalle(req.id)">
-              Atender
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="panel detalle" *ngIf="requerimiento">
-        <div class="panel-header">
-          <h2>Requerimiento #{{ requerimiento.id }}</h2>
-          <span class="estado" [ngClass]="{ completo: requerimiento.estado === 'PROGRAMADO' }">
-            {{ requerimiento.estado }}
-          </span>
-        </div>
-
-        <table class="tabla-detalles">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad solicitada</th>
-              <th>Distribución</th>
-              <th>Compra</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let det of requerimiento.detalles">
-              <td>
-                {{ det.producto?.nombre || ('Producto #' + det.producto?.id) }}
-              </td>
-              <td>{{ det.cantidad }}</td>
-              <td>
-                <div class="campo">
-                  <input type="number"
-                         placeholder="Cantidad"
-                         [(ngModel)]="formularios[det.id].distCantidad">
-                </div>
-                <div class="campo">
-                  <select [(ngModel)]="formularios[det.id].loteId" (click)="asegurarLotes(det.producto?.id)">
-                    <option [ngValue]="undefined">Seleccionar lote</option>
-                    <option *ngFor="let lote of lotesDe(det.producto?.id)" [ngValue]="lote.id">
-                      {{ lote.numeroLote }} · {{ lote.cantidad }} uds
-                    </option>
-                  </select>
-                </div>
-                <button mat-stroked-button color="primary"
-                        (click)="registrarDistribucion(det)"
-                        [disabled]="!formularios[det.id].distCantidad || !formularios[det.id].loteId">
-                  Distribuir
-                </button>
-              </td>
-              <td>
-                <div class="campo">
-                  <input type="number"
-                         placeholder="Cantidad"
-                         [(ngModel)]="formularios[det.id].compraCantidad">
-                </div>
-                <button mat-stroked-button color="accent"
-                        (click)="registrarCompra(det)"
-                        [disabled]="!formularios[det.id].compraCantidad">
-                  Comprar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="acciones-final">
-          <button mat-raised-button color="primary"
-                  (click)="finalizarRequerimiento()"
-                  [disabled]="finalizando">
-            Finalizar programación
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
-  `,
-  styles: [`
-    .programacion { display: flex; gap: 24px; flex-wrap: wrap; }
-    .panel { flex: 1; min-width: 320px; border: 1px solid #ddd; border-radius: 8px; padding: 16px; background: #fff; }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .req-list { list-style: none; padding: 0; margin: 0; }
-    .req-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
-    .req-list li.activo { background: #f3f6ff; }
-    .tabla-detalles { width: 100%; border-collapse: collapse; }
-    .tabla-detalles th, .tabla-detalles td { border-bottom: 1px solid #eee; padding: 8px; vertical-align: top; }
-    .campo { margin-bottom: 8px; }
-    .campo input, .campo select { width: 100%; padding: 6px; }
-    .acciones-final { margin-top: 16px; display: flex; justify-content: flex-end; }
-    .mensaje { margin-top: 16px; padding: 12px; border-radius: 4px; background: #e8f5e9; color: #1b5e20; }
-    .estado { font-weight: 600; }
-    .estado.completo { color: #1b5e20; }
-    .empty { padding: 12px; color: #666; }
-  `]
+  imports: [NgIf, NgFor, NgClass, FormsModule, MatButtonModule, MatIconModule],
+  templateUrl: './programacion.html',
+  styleUrls: ['./programacion.scss']
 })
 export class ProgramacionComponent implements OnInit {
   private readonly api = 'http://localhost:8080/api/programacion';
@@ -293,5 +182,17 @@ export class ProgramacionComponent implements OnInit {
       return [];
     }
     return this.lotes[productoId] || [];
+  }
+
+  get pendientes(): number {
+    return this.requerimientos.filter(req => req.estado === 'PENDIENTE').length;
+    }
+
+  get parciales(): number {
+    return this.requerimientos.filter(req => req.estado === 'PARCIAL').length;
+  }
+
+  get programados(): number {
+    return this.requerimientos.filter(req => req.estado === 'PROGRAMADO').length;
   }
 }

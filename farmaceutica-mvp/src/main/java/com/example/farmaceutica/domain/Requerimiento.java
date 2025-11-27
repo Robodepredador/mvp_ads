@@ -2,6 +2,7 @@ package com.example.farmaceutica.domain;
 
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class Requerimiento {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<DetalleRequerimiento> detalles;
 
     public Requerimiento() {

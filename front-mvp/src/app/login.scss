@@ -1,19 +1,157 @@
-.login-wrapper {
+// login.component.scss
+
+// Variables para colores y estilos consistentes
+:host {
+  --primary-color: #007bff; // Un azul similar al de la imagen
+  --light-gray: #f4f7f9;
+  --text-color: #333;
+  --text-color-light: #fff;
+  --border-radius: 8px;
+}
+
+.login-container {
+  display: flex;
   height: 100vh;
+  width: 100%;
+  background-color: #fff;
+}
+
+// --- Columna Izquierda (Formulario) ---
+.login-form-section {
+  flex-basis: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 40px;
+  background-color: #fff;
+
+  .form-content {
+    max-width: 400px;
+    width: 100%;
+
+    header {
+      margin-bottom: 30px;
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-color);
+      }
+      p {
+        font-size: 1rem;
+        color: #666;
+        a {
+          color: var(--primary-color);
+          text-decoration: none;
+          font-weight: 500;
+        }
+      }
+    }
+  }
 }
 
-.login-card {
-  width: 380px;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0px 6px 18px rgba(0,0,0,0.15) !important;
-  text-align: center;
+// --- Columna Derecha (Bienvenida) ---
+.login-welcome-section {
+  position: relative; // Necesario para los pseudo-elementos
+  flex-basis: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background-color: #0d8cff; // El color azul principal
+  color: var(--text-color-light);
+  overflow: hidden; // Oculta las partes de los círculos que se salen
+
+  .welcome-content {
+    max-width: 450px;
+    text-align: left;
+    z-index: 2; // Asegura que el contenido esté sobre los círculos
+
+    h2 {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .user-avatars {
+      display: flex;
+      margin-top: 30px;
+      margin-bottom: 15px;
+
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        margin-right: -10px; // Para que se superpongan
+      }
+    }
+  }
+
+  // Círculos decorativos en el fondo
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1); // Círculos semi-transparentes
+    z-index: 1;
+  }
+
+  &::before {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    right: -150px;
+  }
+
+  &::after {
+    width: 600px;
+    height: 600px;
+    bottom: -200px;
+    left: -100px;
+  }
 }
 
-.input {
+// Estilos para los elementos del formulario
+.full-width {
   width: 100%;
-  margin-bottom: 15px;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  font-size: 0.9rem;
+
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+}
+
+.login-button {
+  height: 50px;
+  font-size: 1rem;
+  border-radius: var(--border-radius);
+}
+
+// Media Query para pantallas pequeñas (responsive)
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  .login-welcome-section {
+    display: none; // Opcional: Ocultar la sección de bienvenida en móviles
+  }
+  .login-form-section {
+    flex-basis: 100%;
+  }
 }

@@ -1,0 +1,245 @@
+.programacion {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  background: #fff;
+  min-height: 400px;
+}
+
+.cola header,
+.detalle header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cola button mat-icon {
+  margin-right: 6px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.metrics div {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.metrics p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.metrics strong {
+  font-size: 1.4rem;
+  color: #111827;
+}
+
+.req-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.req-list li {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.req-list li:hover {
+  background: #f8fafc;
+}
+
+.req-list li.activo {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.estado {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+.estado.pendiente { background: #fef3c7; color: #92400e; }
+.estado.programado { background: #dcfce7; color: #065f46; }
+.estado.parcial { background: #e0e7ff; color: #4338ca; }
+
+.guidance {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.guidance h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.guidance ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #475569;
+}
+
+.detalle {
+  min-height: 480px;
+}
+
+.estado-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.estado-chip.pendiente { background: #fff7ed; color: #9a3412; }
+.estado-chip.programado { background: #ecfccb; color: #3f6212; }
+.estado-chip.parcial { background: #eef2ff; color: #3730a3; }
+
+.detalle-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.detalle-meta div {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.detalle-table {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.detalle-header,
+.detalle-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr;
+  gap: 16px;
+  padding: 12px 16px;
+  align-items: flex-start;
+}
+
+.detalle-header {
+  background: #f1f5f9;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.detalle-row {
+  border-top: 1px solid #e5e7eb;
+}
+
+.producto h4 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.producto small {
+  color: #94a3b8;
+}
+
+.decision {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.decision label {
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.decision input,
+.decision select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+  font-size: 0.95rem;
+}
+
+.decision button {
+  margin-top: 4px;
+  align-self: flex-start;
+}
+
+.acciones-final {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.empty {
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #475569;
+  text-align: center;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  color: #475569;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  color: #9ca3af;
+}
+
+.toast {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: #ecfccb;
+  color: #3f6212;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .detalle-header,
+  .detalle-row {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+

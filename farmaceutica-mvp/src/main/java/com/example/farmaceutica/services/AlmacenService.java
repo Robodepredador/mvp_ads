@@ -1,6 +1,7 @@
 package com.example.farmaceutica.services;
 
 import com.example.farmaceutica.domain.*;
+import com.example.farmaceutica.services.dto.RecepcionOrdenRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,17 +15,20 @@ public class AlmacenService {
     private final LoteProductoRepository loteRepo;
     private final InventarioRepository invRepo;
     private final MovimientoInventarioRepository movRepo;
+    private final IncidenciaLoteRepository incidenciaLoteRepository;
 
     public AlmacenService(OrdenCompraRepository ocRepo,
                           DetalleOrdenCompraRepository detOcRepo,
                           LoteProductoRepository loteRepo,
                           InventarioRepository invRepo,
-                          MovimientoInventarioRepository movRepo) {
+                          MovimientoInventarioRepository movRepo,
+                          IncidenciaLoteRepository incidenciaLoteRepository) {
         this.ocRepo = ocRepo;
         this.detOcRepo = detOcRepo;
         this.loteRepo = loteRepo;
         this.invRepo = invRepo;
         this.movRepo = movRepo;
+        this.incidenciaLoteRepository = incidenciaLoteRepository;
     }
 
     public List<OrdenCompra> pendientes() {
@@ -34,40 +38,62 @@ public class AlmacenService {
     }
 
     @Transactional
-    public String recibir(Long ocId) {
+    public String recibirBasico(Long ocId) {
         OrdenCompra oc = ocRepo.findById(ocId).orElseThrow();
-        List<DetalleOrdenCompra> detalles = oc.getDetalles();
+        List<RecepcionOrdenRequest.RecepcionDetalleRequest> detalles = oc.getDetalles().stream()
+                .map(det -> new RecepcionOrdenRequest.RecepcionDetalleRequest(
+                        det.getId(),
+                        "L-" + det.getId() + "-" + System.currentTimeMillis(),
+                        java.time.LocalDate.now().plusYears(1),
+                        det.getCantidad(),
+                        "ALMACEN-PRINCIPAL",
+                        null
+                ))
+                .toList();
+        return recibirConDetalle(new RecepcionOrdenRequest(ocId, detalles));
+    }
 
-        for (DetalleOrdenCompra d : detalles) {
+    @Transactional
+    public String recibirConDetalle(RecepcionOrdenRequest request) {
+        OrdenCompra oc = ocRepo.findById(request.ordenCompraId()).orElseThrow();
+
+        for (RecepcionOrdenRequest.RecepcionDetalleRequest detalleRequest : request.detalles()) {
+            DetalleOrdenCompra detalle = detOcRepo.findById(detalleRequest.detalleOrdenCompraId()).orElseThrow();
+            if (!detalle.getOrdenCompra().getId().equals(oc.getId())) {
+                throw new IllegalArgumentException("El detalle no pertenece a la orden indicada");
+            }
+
             LoteProducto lote = new LoteProducto();
-            lote.setProducto(d.getProducto());
-            lote.setCantidad(d.getCantidad());
-            lote.setNumeroLote("L" + System.currentTimeMillis());
+            lote.setProducto(detalle.getProducto());
+            lote.setCantidad(detalleRequest.cantidadRecibida());
+            lote.setNumeroLote(detalleRequest.numeroLote());
+            lote.setFechaVencimiento(detalleRequest.fechaVencimiento());
             loteRepo.save(lote);
 
-            Inventario inv = invRepo.findAll().stream()
-                    .filter(i -> i.getProducto().getId().equals(d.getProducto().getId()))
-                    .findFirst()
-                    .orElseGet(() -> {
-                        Inventario x = new Inventario();
-                        x.setProducto(d.getProducto());
-                        x.setCantidad(0);
-                        return x;
-                    });
+            Inventario inventario = new Inventario();
+            inventario.setProducto(detalle.getProducto());
+            inventario.setLote(lote);
+            inventario.setCantidad(detalleRequest.cantidadRecibida());
+            inventario.setUbicacion(detalleRequest.ubicacion());
+            invRepo.save(inventario);
 
-            inv.setCantidad(inv.getCantidad() + d.getCantidad());
-            invRepo.save(inv);
+            MovimientoInventario movimiento = new MovimientoInventario();
+            movimiento.setInventario(inventario);
+            movimiento.setTipo("ENTRADA");
+            movimiento.setCantidad(detalleRequest.cantidadRecibida());
+            movimiento.setObservaciones("Recepción OC #" + oc.getId());
+            movRepo.save(movimiento);
 
-            MovimientoInventario mov = new MovimientoInventario();
-            mov.setInventario(inv);
-            mov.setTipo("ENTRADA");
-            mov.setCantidad(d.getCantidad());
-            movRepo.save(mov);
+            if (detalleRequest.incidencia() != null && !detalleRequest.incidencia().isBlank()) {
+                IncidenciaLote incidencia = new IncidenciaLote();
+                incidencia.setLote(lote);
+                incidencia.setDescripcion(detalleRequest.incidencia());
+                incidenciaLoteRepository.save(incidencia);
+            }
         }
 
         oc.setEstado("RECIBIDA");
         ocRepo.save(oc);
-
-        return "Recepción completada";
+        return "Recepción registrada";
     }
 }

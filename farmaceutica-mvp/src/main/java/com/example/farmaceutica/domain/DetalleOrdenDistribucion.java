@@ -26,6 +26,9 @@ public class DetalleOrdenDistribucion {
     @JoinColumn(name = "lote_id")
     private LoteProducto lote;
 
+    @Column(length = 255)
+    private String motivoDecision;
+
     @Column
     private Long createdBy;
     @Column
@@ -67,6 +70,8 @@ public class DetalleOrdenDistribucion {
     public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
     public LoteProducto getLote() { return lote; }
     public void setLote(LoteProducto lote) { this.lote = lote; }
+    public String getMotivoDecision() { return motivoDecision; }
+    public void setMotivoDecision(String motivoDecision) { this.motivoDecision = motivoDecision; }
     public Long getCreatedBy() { return createdBy; }
     public void setCreatedBy(Long createdBy) { this.createdBy = createdBy; }
     public Long getUpdatedBy() { return updatedBy; }
