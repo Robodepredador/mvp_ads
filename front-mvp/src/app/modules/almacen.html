@@ -1,24 +1,108 @@
-<h2>Almacén - Recepción</h2>
+<div class="almacen-layout">
 
-<mat-card>
-  <button mat-raised-button color="primary" (click)="cargarPendientes()">
-    Cargar Órdenes de Compra
-  </button>
-</mat-card>
+  <!-- Sidebar: Lista de Órdenes -->
+  <aside class="panel">
+    <header>
+      <div>
+        <p class="eyebrow">Recepción</p>
+        <h2>Órdenes Pendientes</h2>
+      </div>
+      <button mat-icon-button (click)="cargarPendientes()" [disabled]="cargando">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </header>
 
-<div *ngFor="let oc of ordenes">
-  <mat-card>
-    <p><strong>Orden Compra:</strong> {{ oc.id }}</p>
+    <div class="list-container">
+      <div *ngIf="!ordenes.length && !cargando" class="empty-state" style="height: 200px;">
+        <p>No hay órdenes por recibir</p>
+      </div>
 
-    <button mat-raised-button color="warn" (click)="recibir(oc.id)">
-      Recibir Productos
-    </button>
-  </mat-card>
+      <div *ngFor="let oc of ordenes" class="orden-item" [class.active]="oc.id === seleccionada?.id"
+        (click)="seleccionar(oc)">
+        <div class="orden-header">
+          <strong>OC #{{ oc.id }}</strong>
+          <span class="eyebrow">{{ oc.fecha | date:'shortDate' }}</span>
+        </div>
+        <div class="orden-meta">
+          <p>{{ oc.proveedor.nombre }}</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main: Formulario de Recepción -->
+  <section class="panel">
+    <ng-container *ngIf="seleccionada; else noSelection">
+      <header>
+        <div>
+          <p class="eyebrow">Detalle de Recepción</p>
+          <h2>Orden #{{ seleccionada.id }} - {{ seleccionada.proveedor.nombre }}</h2>
+        </div>
+      </header>
+
+      <div class="detail-content">
+        <div *ngFor="let det of seleccionada.detalles" class="reception-card">
+
+          <div class="product-header">
+            <h4>{{ det.producto.nombre }}</h4>
+            <span class="eyebrow">Solicitado: <strong>{{ det.cantidad }}</strong></span>
+          </div>
+
+          <div class="reception-form">
+            <div class="form-group">
+              <label>Cantidad Recibida</label>
+              <input type="number" [(ngModel)]="formularios[det.id].cantidadRecibida" min="1">
+            </div>
+
+            <div class="form-group">
+              <label>Número de Lote</label>
+              <input type="text" [(ngModel)]="formularios[det.id].numeroLote" placeholder="L-000000">
+            </div>
+
+            <div class="form-group">
+              <label>Vencimiento</label>
+              <input type="date" [(ngModel)]="formularios[det.id].fechaVencimiento">
+            </div>
+
+            <div class="form-group">
+              <label>Ubicación</label>
+              <select [(ngModel)]="formularios[det.id].ubicacion">
+                <option value="ALMACEN-PRINCIPAL">Almacén Principal</option>
+                <option value="ALMACEN-FRIO">Cámara Fría</option>
+                <option value="ALMACEN-SEGURIDAD">Seguridad</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Incidencia / Notas (Opcional)</label>
+              <input type="text" [(ngModel)]="formularios[det.id].incidencia"
+                placeholder="Ej: Caja dañada, pero producto intacto">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <footer class="actions-footer">
+        <button mat-raised-button color="primary" [disabled]="!esFormularioValido() || procesando"
+          (click)="registrarRecepcion()">
+          <mat-icon>inventory</mat-icon>
+          Registrar Recepción e Ingreso
+        </button>
+      </footer>
+    </ng-container>
+
+    <ng-template #noSelection>
+      <div class="empty-state">
+        <mat-icon>local_shipping</mat-icon>
+        <h3>Selecciona una Orden de Compra</h3>
+        <p>Registra la recepción de productos, asigna lotes y ubicaciones.</p>
+      </div>
+    </ng-template>
+  </section>
+
 </div>
 
-<div *ngIf="mensaje">
-  <mat-card>
-    <h3>Resultado</h3>
-    <pre>{{ mensaje }}</pre>
-  </mat-card>
+<div class="toast" *ngIf="mensaje">
+  {{ mensaje }}
 </div>

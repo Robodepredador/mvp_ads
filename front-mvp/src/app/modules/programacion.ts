@@ -30,9 +30,19 @@ interface LoteProducto {
 }
 
 interface FormDecision {
+  accion: 'DISTRIBUIR' | 'COMPRAR';
   distCantidad?: number;
   loteId?: number;
   compraCantidad?: number;
+}
+
+interface DecisionRegistro {
+  tipo: string;
+  productoId: number;
+  producto: string;
+  cantidad: number;
+  motivo: string;
+  fecha: string;
 }
 
 @Component({
@@ -49,11 +59,12 @@ export class ProgramacionComponent implements OnInit {
   requerimiento: Requerimiento | null = null;
   lotes: Record<number, LoteProducto[]> = {};
   formularios: Record<number, FormDecision> = {};
+  historial: Record<number, number> = {}; // productoId -> cantidad programada
   mensaje = '';
   cargando = false;
   finalizando = false;
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   ngOnInit(): void {
     this.cargarRequerimientos();
@@ -85,10 +96,51 @@ export class ProgramacionComponent implements OnInit {
           this.requerimiento = req;
           this.mensaje = '';
           this.formularios = {};
-          (req.detalles || []).forEach(det => this.formularios[det.id] = {});
+          this.historial = {};
+          (req.detalles || []).forEach(det => {
+            const stock = this.getStockTotal(det.producto?.id);
+            this.formularios[det.id] = {
+              accion: stock > 0 ? 'DISTRIBUIR' : 'COMPRAR'
+            };
+            this.asegurarLotes(det.producto?.id);
+          });
+          this.cargarHistorial(id);
         },
         error: () => this.mensaje = 'No se pudo obtener el detalle del requerimiento.'
       });
+  }
+
+  getStockTotal(productoId?: number): number {
+    if (!productoId || !this.lotes[productoId]) return 0;
+    return this.lotes[productoId].reduce((acc, lote) => acc + lote.cantidad, 0);
+  }
+
+  cargarHistorial(id: number): void {
+    this.http.get<DecisionRegistro[]>(`${this.api}/requerimientos/${id}/historial`, { headers: this.headers() })
+      .subscribe({
+        next: (registros) => {
+          const mapa: Record<number, number> = {};
+          registros.forEach(r => {
+            const actual = mapa[r.productoId] || 0;
+            mapa[r.productoId] = actual + r.cantidad;
+          });
+          this.historial = mapa;
+        }
+      });
+  }
+
+  getProgramado(productoId?: number): number {
+    return productoId ? (this.historial[productoId] || 0) : 0;
+  }
+
+  getPendiente(det: DetalleRequerimiento): number {
+    if (!det.producto) return 0;
+    const programado = this.getProgramado(det.producto.id);
+    return Math.max(0, det.cantidad - programado);
+  }
+
+  isCompletado(det: DetalleRequerimiento): boolean {
+    return this.getPendiente(det) === 0;
   }
 
   asegurarLotes(productoId?: number | null): void {
@@ -186,7 +238,7 @@ export class ProgramacionComponent implements OnInit {
 
   get pendientes(): number {
     return this.requerimientos.filter(req => req.estado === 'PENDIENTE').length;
-    }
+  }
 
   get parciales(): number {
     return this.requerimientos.filter(req => req.estado === 'PARCIAL').length;

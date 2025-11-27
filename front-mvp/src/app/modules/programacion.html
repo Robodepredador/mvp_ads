@@ -11,44 +11,45 @@
       </button>
     </header>
 
-    <div class="metrics">
-      <div>
-        <p>Pendientes</p>
-        <strong>{{ pendientes }}</strong>
-      </div>
-      <div>
-        <p>Parciales</p>
-        <strong>{{ parciales }}</strong>
-      </div>
-      <div>
-        <p>Programados</p>
-        <strong>{{ programados }}</strong>
-      </div>
-    </div>
-
-    <div *ngIf="!requerimientos.length && !cargando" class="empty">
-      No se encontraron requerimientos.
-    </div>
-
-    <ul class="req-list" *ngIf="requerimientos.length">
-      <li *ngFor="let req of requerimientos"
-          [class.activo]="req.id === requerimiento?.id"
-          (click)="verDetalle(req.id)">
-        <div class="req-info">
-          <strong>#{{ req.id }}</strong>
-          <span class="estado" [ngClass]="req.estado?.toLowerCase()">{{ req.estado }}</span>
+    <div class="req-list-container">
+      <div class="metrics">
+        <div>
+          <p>Pendientes</p>
+          <strong>{{ pendientes }}</strong>
         </div>
-        <small>Detalles: {{ req.detalles?.length || 0 }}</small>
-      </li>
-    </ul>
+        <div>
+          <p>Parciales</p>
+          <strong>{{ parciales }}</strong>
+        </div>
+        <div>
+          <p>Programados</p>
+          <strong>{{ programados }}</strong>
+        </div>
+      </div>
 
-    <div class="guidance">
-      <h3>Cómo priorizar</h3>
-      <ol>
-        <li>Empieza por los requerimientos con más productos pendientes.</li>
-        <li>Decide primero los productos con inventario disponible.</li>
-        <li>Registra compras sólo cuando no exista stock asignable.</li>
-      </ol>
+      <div *ngIf="!requerimientos.length && !cargando" class="empty">
+        No se encontraron requerimientos.
+      </div>
+
+      <ul class="req-list" *ngIf="requerimientos.length">
+        <li *ngFor="let req of requerimientos" [class.activo]="req.id === requerimiento?.id"
+          (click)="verDetalle(req.id)">
+          <div class="req-info">
+            <strong>#{{ req.id }}</strong>
+            <span class="estado" [ngClass]="req.estado?.toLowerCase()">{{ req.estado }}</span>
+          </div>
+          <small>Detalles: {{ req.detalles?.length || 0 }}</small>
+        </li>
+      </ul>
+
+      <div class="guidance">
+        <h3>Cómo priorizar</h3>
+        <ol>
+          <li>Empieza por los requerimientos con más productos pendientes.</li>
+          <li>Decide primero los productos con inventario disponible.</li>
+          <li>Registra compras sólo cuando no exista stock asignable.</li>
+        </ol>
+      </div>
     </div>
   </aside>
 
@@ -58,89 +59,9 @@
         <div>
           <p class="eyebrow">Detalle</p>
           <h2>Requerimiento #{{ requerimiento.id }}</h2>
+          <p>El detalle aparecerá aquí para que tomes decisiones de distribución o compra.</p>
         </div>
-        <span class="estado-chip" [ngClass]="requerimiento.estado?.toLowerCase()">
-          {{ requerimiento.estado }}
-        </span>
-      </header>
-
-      <div class="detalle-meta">
-        <div>
-          <p>Productos</p>
-          <strong>{{ requerimiento.detalles?.length || 0 }}</strong>
-        </div>
-        <div>
-          <p>Último mensaje</p>
-          <strong>{{ mensaje || 'Sin novedades' }}</strong>
-        </div>
-      </div>
-
-      <div class="detalle-table">
-        <div class="detalle-header">
-          <span>Producto</span>
-          <span>Solicitado</span>
-          <span>Distribución</span>
-          <span>Compra</span>
-        </div>
-
-        <div class="detalle-row" *ngFor="let det of requerimiento.detalles">
-          <div class="producto">
-            <h4>{{ det.producto?.nombre || ('Producto #' + det.producto?.id) }}</h4>
-            <small>ID {{ det.producto?.id || 'N/D' }}</small>
-          </div>
-          <div class="cantidad">
-            {{ det.cantidad }}
-          </div>
-          <div class="decision">
-            <label>Cantidad</label>
-            <input type="number"
-                   min="1"
-                   placeholder="0"
-                   [(ngModel)]="formularios[det.id].distCantidad">
-            <label>Lote</label>
-            <select [(ngModel)]="formularios[det.id].loteId" (click)="asegurarLotes(det.producto?.id)">
-              <option [ngValue]="undefined">Seleccionar lote</option>
-              <option *ngFor="let lote of lotesDe(det.producto?.id)" [ngValue]="lote.id">
-                {{ lote.numeroLote }} · {{ lote.cantidad }} uds
-              </option>
-            </select>
-            <button mat-stroked-button color="primary"
-                    (click)="registrarDistribucion(det)"
-                    [disabled]="!formularios[det.id].distCantidad || !formularios[det.id].loteId">
-              Registrar
-            </button>
-          </div>
-          <div class="decision">
-            <label>Cantidad</label>
-            <input type="number"
-                   min="1"
-                   placeholder="0"
-                   [(ngModel)]="formularios[det.id].compraCantidad">
-            <button mat-stroked-button color="accent"
-                    (click)="registrarCompra(det)"
-                    [disabled]="!formularios[det.id].compraCantidad">
-              Solicitar compra
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <footer class="acciones-final">
-        <button mat-raised-button color="primary"
-                (click)="finalizarRequerimiento()"
-                [disabled]="finalizando">
-          Finalizar programación
-        </button>
-      </footer>
-    </ng-container>
-
-    <ng-template #emptyDetalle>
-      <div class="empty-state">
-        <mat-icon>playlist_add_check</mat-icon>
-        <h3>Selecciona un requerimiento</h3>
-        <p>El detalle aparecerá aquí para que tomes decisiones de distribución o compra.</p>
-      </div>
-    </ng-template>
+        </ng-template>
   </section>
 </section>
 

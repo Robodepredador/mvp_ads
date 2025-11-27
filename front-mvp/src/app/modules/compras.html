@@ -1,24 +1,117 @@
-<h2>Compras</h2>
+<div class="compras-layout">
 
-<mat-card>
-  <button mat-raised-button color="primary" (click)="cargarPendientes()">
-    Cargar Solicitudes Pendientes
-  </button>
-</mat-card>
+  <!-- Sidebar: Lista de Solicitudes -->
+  <aside class="panel">
+    <header>
+      <div>
+        <p class="eyebrow">Bandeja de Entrada</p>
+        <h2>Solicitudes</h2>
+      </div>
+      <button mat-icon-button (click)="cargarPendientes()" [disabled]="cargando">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </header>
 
-<div *ngFor="let s of solicitudes">
-  <mat-card>
-    <p><strong>Solicitud:</strong> {{ s.id }}</p>
+    <div class="list-container">
+      <div *ngIf="!solicitudes.length && !cargando" class="empty-state" style="height: 200px;">
+        <p>No hay solicitudes pendientes</p>
+      </div>
 
-    <button mat-raised-button color="accent" (click)="generarOrden(s.id)">
-      Generar Orden de Compra
-    </button>
-  </mat-card>
+      <div *ngFor="let s of solicitudes" class="solicitud-item" [class.active]="s.id === seleccionada?.id"
+        (click)="seleccionar(s)">
+        <div class="sol-header">
+          <strong>#{{ s.id }}</strong>
+          <span class="eyebrow">{{ s.fechaSolicitud | date:'shortDate' }}</span>
+        </div>
+        <div class="sol-meta">
+          <p>{{ s.servicioSolicitante }}</p>
+          <p>{{ s.solicitante }}</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main: Detalle y Gestión -->
+  <section class="panel">
+    <ng-container *ngIf="seleccionada; else noSelection">
+      <header>
+        <div>
+          <p class="eyebrow">Gestión de Compra</p>
+          <h2>Solicitud #{{ seleccionada.id }}</h2>
+        </div>
+        <div class="eyebrow">{{ seleccionada.estado }}</div>
+      </header>
+
+      <div class="detail-content">
+        <div *ngFor="let det of seleccionada.detalles" class="product-card">
+
+          <!-- Info Producto -->
+          <div class="product-info">
+            <h4>{{ det.producto.nombre }}</h4>
+            <small>Cantidad: <strong>{{ det.cantidad }}</strong></small>
+          </div>
+
+          <!-- Selección Proveedor -->
+          <div class="form-group" *ngIf="!det.proveedorSeleccionado">
+            <label>Proveedor</label>
+            <select [(ngModel)]="formularios[det.id].proveedorId" (change)="onProveedorChange(det.id, det.producto.id)">
+              <option [ngValue]="undefined">Seleccionar...</option>
+              <option *ngFor="let pp of getProveedores(det.producto.id)" [ngValue]="pp.proveedor.id">
+                {{ pp.proveedor.nombre }} ({{ pp.precio | currency:pp.moneda }})
+              </option>
+            </select>
+          </div>
+
+          <!-- Precio Negociado -->
+          <div class="form-group" *ngIf="!det.proveedorSeleccionado">
+            <label>Precio Negociado</label>
+            <input type="number" [(ngModel)]="formularios[det.id].precio" placeholder="0.00">
+          </div>
+
+          <!-- Botón Asignar -->
+          <div *ngIf="!det.proveedorSeleccionado">
+            <button mat-stroked-button color="primary"
+              [disabled]="!formularios[det.id].proveedorId || !formularios[det.id].precio"
+              (click)="asignarProveedor(det)">
+              Asignar
+            </button>
+          </div>
+
+          <!-- Estado Asignado -->
+          <div class="assigned-info" *ngIf="det.proveedorSeleccionado"
+            style="grid-column: 2 / -1; display: flex; justify-content: space-between; align-items: center;">
+            <div class="assigned-badge">
+              <mat-icon>check_circle</mat-icon>
+              {{ det.proveedorSeleccionado.nombre }}
+            </div>
+            <strong>{{ det.precioNegociado | currency }}</strong>
+          </div>
+
+        </div>
+      </div>
+
+      <footer class="actions-footer">
+        <button mat-raised-button color="accent" [disabled]="!todosAsignados()" (click)="generarOrden()">
+          <mat-icon>receipt_long</mat-icon>
+          Generar Orden de Compra
+        </button>
+      </footer>
+    </ng-container>
+
+    <ng-template #noSelection>
+      <div class="empty-state">
+        <mat-icon>shopping_cart</mat-icon>
+        <h3>Selecciona una solicitud</h3>
+        <p>Gestiona proveedores y precios para generar órdenes de compra.</p>
+      </div>
+    </ng-template>
+  </section>
+
 </div>
 
-<div *ngIf="ordenGenerada">
-  <mat-card>
-    <h3>Orden Generada</h3>
-    <pre>{{ ordenGenerada | json }}</pre>
-  </mat-card>
+<div class="toast" *ngIf="mensaje">
+  {{ mensaje }}
+</div>
+<div class="toast" *ngIf="ordenGenerada" style="background: #15803d;">
+  Orden #{{ ordenGenerada[0]?.id }} generada exitosamente
 </div>

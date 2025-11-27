@@ -118,13 +118,9 @@ export class AuthService {
       ];
     }
 
-    // por defecto, todo (para pruebas)
+    // Default: Dashboard only
     return [
-      { label: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
-      { label: 'Programación', path: '/programacion', icon: 'assignment' },
-      { label: 'Compras', path: '/compras', icon: 'shopping_cart' },
-      { label: 'Almacén', path: '/almacen', icon: 'inventory_2' },
-      { label: 'Distribución', path: '/distribucion', icon: 'local_shipping' }
+      { label: 'Dashboard', path: '/dashboard', icon: 'dashboard' }
     ];
   }
 

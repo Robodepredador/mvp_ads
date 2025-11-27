@@ -6,6 +6,7 @@ import com.example.farmaceutica.services.DistribucionService;
 import com.example.farmaceutica.services.dto.ActualizarSeguimientoRequest;
 import com.example.farmaceutica.services.dto.AsignacionTransporteRequest;
 import com.example.farmaceutica.services.dto.IncidenciaTransporteRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,12 +14,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/distribucion")
 @CrossOrigin
+@PreAuthorize("hasRole('DISTRIBUCION')")
 public class DistribucionController {
 
     private final DistribucionService distribucionService;
 
     public DistribucionController(DistribucionService distribucionService) {
         this.distribucionService = distribucionService;
+    }
+
+    @GetMapping("/vehiculos")
+    public List<com.example.farmaceutica.domain.Vehiculo> getVehiculos() {
+        return distribucionService.listarVehiculos();
     }
 
     @GetMapping("/pendientes")
@@ -29,8 +36,7 @@ public class DistribucionController {
     @PostMapping("/asignar")
     public SeguimientoDistribucion asignar(
             @RequestParam Long ordenId,
-            @RequestParam Long vehiculoId
-    ) {
+            @RequestParam Long vehiculoId) {
         return distribucionService.asignar(ordenId, vehiculoId);
     }
 
@@ -46,13 +52,13 @@ public class DistribucionController {
 
     @PostMapping("/seguimiento/{id}/estado")
     public SeguimientoDistribucion actualizarEstado(@PathVariable Long id,
-                                                    @RequestBody ActualizarSeguimientoRequest request) {
+            @RequestBody ActualizarSeguimientoRequest request) {
         return distribucionService.actualizarEstado(id, request.estado(), request.observacion());
     }
 
     @PostMapping("/seguimiento/{id}/incidencias")
     public String registrarIncidencia(@PathVariable Long id,
-                                      @RequestBody IncidenciaTransporteRequest request) {
+            @RequestBody IncidenciaTransporteRequest request) {
         return distribucionService.registrarIncidencia(id, request);
     }
 }

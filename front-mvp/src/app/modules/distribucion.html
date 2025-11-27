@@ -1,28 +1,107 @@
-<h2>Distribución</h2>
+<div class="distribucion-layout">
 
-<mat-card>
-  <button mat-raised-button color="primary" (click)="cargarPendientes()">
-    Cargar Órdenes de Distribución
-  </button>
-</mat-card>
+  <!-- Sidebar: Lista de Órdenes -->
+  <aside class="panel">
+    <header>
+      <div>
+        <p class="eyebrow">Logística</p>
+        <h2>Envíos Pendientes</h2>
+      </div>
+      <button mat-icon-button (click)="cargarPendientes()" [disabled]="cargando">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </header>
 
-<div *ngFor="let od of ordenes">
-  <mat-card>
-    <p><strong>Orden Distribución:</strong> {{ od.id }}</p>
+    <div class="list-container">
+      <div *ngIf="!ordenes.length && !cargando" class="empty-state" style="height: 200px;">
+        <p>No hay envíos pendientes</p>
+      </div>
 
-    <button mat-raised-button color="accent" (click)="asignar(od.id)">
-      Asignar Vehículo
-    </button>
-  </mat-card>
+      <div *ngFor="let od of ordenes" class="orden-item" [class.active]="od.id === seleccionada?.id"
+        (click)="seleccionar(od)">
+        <div class="orden-header">
+          <strong>OD #{{ od.id }}</strong>
+          <span class="eyebrow">{{ od.fechaSalida | date:'shortDate' }}</span>
+        </div>
+        <div class="orden-meta">
+          <p>{{ od.destino }}</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main: Asignación de Vehículo -->
+  <section class="panel">
+    <ng-container *ngIf="seleccionada; else noSelection">
+      <header>
+        <div>
+          <p class="eyebrow">Asignación de Transporte</p>
+          <h2>Destino: {{ seleccionada.destino }}</h2>
+        </div>
+      </header>
+
+      <div class="detail-content">
+        <div class="assignment-card">
+          <div class="vehicle-selector">
+            <label>Seleccionar Vehículo Disponible</label>
+            <select [(ngModel)]="vehiculoSeleccionadoId">
+              <option [ngValue]="null">-- Seleccione un vehículo --</option>
+              <option *ngFor="let v of vehiculos" [value]="v.id">
+                {{ v.placa }} - {{ v.marca }} {{ v.modelo }} ({{ v.capacidad }}kg)
+              </option>
+            </select>
+          </div>
+
+          <div class="vehicle-info" *ngIf="getVehiculoSeleccionado() as v">
+            <div class="info-item">
+              <label>Tipo</label>
+              <p>{{ v.tipo }}</p>
+            </div>
+            <div class="info-item">
+              <label>Estado</label>
+              <p>{{ v.estado }}</p>
+            </div>
+            <div class="info-item">
+              <label>Capacidad</label>
+              <p>{{ v.capacidad }} kg</p>
+            </div>
+            <div class="info-item">
+              <label>Conductor</label>
+              <p>No asignado</p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Detalle de Carga</h3>
+        <div class="assignment-card">
+          <ul>
+            <li *ngFor="let det of seleccionada.detalles">
+              {{ det.cantidad }} uds. - {{ det.producto.nombre }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <footer class="actions-footer">
+        <button mat-raised-button color="primary" [disabled]="!vehiculoSeleccionadoId || procesando"
+          (click)="asignarTransporte()">
+          <mat-icon>local_shipping</mat-icon>
+          Asignar Vehículo y Despachar
+        </button>
+      </footer>
+    </ng-container>
+
+    <ng-template #noSelection>
+      <div class="empty-state">
+        <mat-icon>map</mat-icon>
+        <h3>Selecciona un Envío</h3>
+        <p>Asigna vehículos y gestiona la flota de distribución.</p>
+      </div>
+    </ng-template>
+  </section>
+
 </div>
 
-<div *ngIf="seguimiento">
-  <mat-card>
-    <h3>Vehículo Asignado</h3>
-    <pre>{{ seguimiento | json }}</pre>
-
-    <button mat-raised-button color="warn" (click)="entregar(seguimiento.id)">
-      Marcar Entregado
-    </button>
-  </mat-card>
+<div class="toast" *ngIf="mensaje">
+  {{ mensaje }}
 </div>

@@ -5,6 +5,7 @@ import com.example.farmaceutica.domain.ProductoProveedor;
 import com.example.farmaceutica.domain.SolicitudCompra;
 import com.example.farmaceutica.domain.DetalleSolicitudCompra;
 import com.example.farmaceutica.services.ComprasService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/compras")
 @CrossOrigin
+@PreAuthorize("hasRole('COMPRAS')")
 public class ComprasController {
 
     private final ComprasService comprasService;
@@ -32,7 +34,7 @@ public class ComprasController {
 
     @PostMapping("/detalles/{detalleId}/proveedor")
     public DetalleSolicitudCompra seleccionarProveedor(@PathVariable Long detalleId,
-                                                       @RequestBody SeleccionProveedorRequest request) {
+            @RequestBody SeleccionProveedorRequest request) {
         return comprasService.asignarProveedor(detalleId, request.proveedorId(), request.precioNegociado());
     }
 
@@ -41,5 +43,6 @@ public class ComprasController {
         return comprasService.generarOrden(id);
     }
 
-    public record SeleccionProveedorRequest(Long proveedorId, java.math.BigDecimal precioNegociado) {}
+    public record SeleccionProveedorRequest(Long proveedorId, java.math.BigDecimal precioNegociado) {
+    }
 }

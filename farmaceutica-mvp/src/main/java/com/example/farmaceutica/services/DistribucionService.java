@@ -19,11 +19,11 @@ public class DistribucionService {
     private final IncidenciaTransporteRepository incidenciaTransporteRepository;
 
     public DistribucionService(OrdenDistribucionRepository odRepo,
-                               VehiculoRepository vehRepo,
-                               SeguimientoDistribucionRepository segRepo,
-                               DetalleOrdenDistribucionRepository detalleOrdenDistribucionRepository,
-                               DetalleTransporteRepository detalleTransporteRepository,
-                               IncidenciaTransporteRepository incidenciaTransporteRepository) {
+            VehiculoRepository vehRepo,
+            SeguimientoDistribucionRepository segRepo,
+            DetalleOrdenDistribucionRepository detalleOrdenDistribucionRepository,
+            DetalleTransporteRepository detalleTransporteRepository,
+            IncidenciaTransporteRepository incidenciaTransporteRepository) {
         this.odRepo = odRepo;
         this.vehRepo = vehRepo;
         this.segRepo = segRepo;
@@ -34,6 +34,10 @@ public class DistribucionService {
 
     public List<OrdenDistribucion> pendientes() {
         return odRepo.findAll();
+    }
+
+    public List<Vehiculo> listarVehiculos() {
+        return vehRepo.findAll();
     }
 
     @Transactional
@@ -55,7 +59,8 @@ public class DistribucionService {
         java.util.List<SeguimientoDistribucion> seguimientos = new java.util.ArrayList<>();
 
         for (AsignacionTransporteRequest.DetalleAsignacion detalle : request.detalles()) {
-            DetalleOrdenDistribucion detOrden = detalleOrdenDistribucionRepository.findById(detalle.detalleOrdenDistribucionId()).orElseThrow();
+            DetalleOrdenDistribucion detOrden = detalleOrdenDistribucionRepository
+                    .findById(detalle.detalleOrdenDistribucionId()).orElseThrow();
             if (!detOrden.getOrdenDistribucion().getId().equals(orden.getId())) {
                 throw new IllegalArgumentException("El detalle no pertenece a la orden");
             }

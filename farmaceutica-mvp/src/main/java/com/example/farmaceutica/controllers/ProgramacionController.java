@@ -2,6 +2,7 @@ package com.example.farmaceutica.controllers;
 
 import com.example.farmaceutica.domain.*;
 import com.example.farmaceutica.services.ProgramacionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/programacion")
 @CrossOrigin
+@PreAuthorize("hasRole('PROGRAMACION')")
 public class ProgramacionController {
 
     private final ProgramacionService programacionService;
@@ -54,19 +56,19 @@ public class ProgramacionController {
     // 5. Registrar decisión de distribución
     @PostMapping("/decidir/distribucion")
     public String registrarDecisionDistribucion(@RequestParam Long requerimientoId,
-                                                @RequestParam Long productoId,
-                                                @RequestParam int cantidad,
-                                                @RequestParam Long loteId,
-                                                @RequestParam(required = false) String motivo) {
+            @RequestParam Long productoId,
+            @RequestParam int cantidad,
+            @RequestParam Long loteId,
+            @RequestParam(required = false) String motivo) {
         return programacionService.registrarDecisionDistribucion(requerimientoId, productoId, cantidad, loteId, motivo);
     }
 
     // 6. Registrar decisión de compra
     @PostMapping("/decidir/compra")
     public String registrarDecisionCompra(@RequestParam Long requerimientoId,
-                                          @RequestParam Long productoId,
-                                          @RequestParam int cantidad,
-                                          @RequestParam(required = false) String motivo) {
+            @RequestParam Long productoId,
+            @RequestParam int cantidad,
+            @RequestParam(required = false) String motivo) {
         return programacionService.registrarDecisionCompra(requerimientoId, productoId, cantidad, motivo);
     }
 
