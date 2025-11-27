@@ -24,12 +24,19 @@ public class LenientPasswordEncoder implements PasswordEncoder {
             return false;
         }
 
+        String trimmedRaw = rawPassword == null ? "" : rawPassword.toString().trim();
+        String trimmedEncoded = encodedPassword.trim();
+
         if (encodedPassword.startsWith("$2a$") || encodedPassword.startsWith("$2b$")
                 || encodedPassword.startsWith("$2y$")) {
             return bcrypt.matches(rawPassword, encodedPassword);
         }
 
-        // Stored password is not a BCrypt hash; compare as plain text for legacy data.
-        return encodedPassword.equals(rawPassword.toString());
+        if (encodedPassword.startsWith("{noop}")) {
+            return trimmedEncoded.substring("{noop}".length()).equals(trimmedRaw);
+        }
+
+        // Stored password is not a BCrypt hash; compare as plain text (leniently) for legacy data.
+        return trimmedEncoded.equals(trimmedRaw);
     }
 }
