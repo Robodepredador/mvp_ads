@@ -17,6 +17,7 @@ import { MatCardModule } from '@angular/material/card'; // <--- CRÍTICO
           <mat-card-title>Acceso al Sistema</mat-card-title>
         </mat-card-header>
         <mat-card-content>
+          <p class="hint">Usuario inicial: programacion / mvp2024</p>
           <div class="input-group">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Usuario</mat-label>
@@ -41,11 +42,12 @@ import { MatCardModule } from '@angular/material/card'; // <--- CRÍTICO
     .login-card { width: 350px; padding: 20px; }
     .full-width { width: 100%; }
     .input-group { margin-bottom: 10px; margin-top: 10px; }
+    .hint { margin: 0; color: #666; font-size: 12px; }
   `]
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  username = 'programacion';
+  password = 'mvp2024';
 
   constructor(private auth: AuthService, private router: Router) {}
 

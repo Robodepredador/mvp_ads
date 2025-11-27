@@ -7,12 +7,11 @@
 -- 1. USUARIOS
 -- =====================================
 INSERT INTO usuarios (id, username, password, rol, activo, nombre_completo, created_at, updated_at) VALUES
-  (1, 'programacion', '{bcrypt}$2a$10$2h1kAfjcfN1CgJz8oDUK2u0FKgCLkqYwF9fn6X.uOj5LyQ1rfk6iK', 'PROGRAMACION', TRUE, 'Usuario Programación', NOW(), NOW()),
-  (2, 'compras',      '{bcrypt}$2a$10$2h1kAfjcfN1CgJz8oDUK2u0FKgCLkqYwF9fn6X.uOj5LyQ1rfk6iK', 'COMPRAS', TRUE, 'Usuario Compras', NOW(), NOW()),
-  (3, 'almacen',      '{bcrypt}$2a$10$2h1kAfjcfN1CgJz8oDUK2u0FKgCLkqYwF9fn6X.uOj5LyQ1rfk6iK', 'ALMACEN', TRUE, 'Usuario Almacén', NOW(), NOW()),
-  (4, 'distribucion', '{bcrypt}$2a$10$2h1kAfjcfN1CgJz8oDUK2u0FKgCLkqYwF9fn6X.uOj5LyQ1rfk6iK', 'DISTRIBUCION', TRUE, 'Usuario Distribución', NOW(), NOW()),
-  (5, 'admin',        '{bcrypt}$2a$10$2h1kAfjcfN1CgJz8oDUK2u0FKgCLkqYwF9fn6X.uOj5LyQ1rfk6iK', 'ADMIN', TRUE, 'Administrador General', NOW(), NOW());
-
+  (1, 'programacion', '$2y$12$AJL85JOTFUc0RFq6CaIUfOzfXVQfrh3Fse4HyZZ3BscFOpmz1RKsS', 'PROGRAMACION', TRUE, 'Usuario Programación', NOW(), NOW()),
+  (2, 'compras',      '$2y$12$AJL85JOTFUc0RFq6CaIUfOzfXVQfrh3Fse4HyZZ3BscFOpmz1RKsS', 'COMPRAS', TRUE, 'Usuario Compras', NOW(), NOW()),
+  (3, 'almacen',      '$2y$12$AJL85JOTFUc0RFq6CaIUfOzfXVQfrh3Fse4HyZZ3BscFOpmz1RKsS', 'ALMACEN', TRUE, 'Usuario Almacén', NOW(), NOW()),
+  (4, 'distribucion', '$2y$12$AJL85JOTFUc0RFq6CaIUfOzfXVQfrh3Fse4HyZZ3BscFOpmz1RKsS', 'DISTRIBUCION', TRUE, 'Usuario Distribución', NOW(), NOW()),
+  (5, 'admin',        '$2y$12$AJL85JOTFUc0RFq6CaIUfOzfXVQfrh3Fse4HyZZ3BscFOpmz1RKsS', 'ADMIN', TRUE, 'Administrador General', NOW(), NOW());
 -- =====================================
 -- 2. PRODUCTOS
 -- =====================================

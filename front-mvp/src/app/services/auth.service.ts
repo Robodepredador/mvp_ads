@@ -61,7 +61,7 @@ export class AuthService {
   getMenu(): MenuItem[] {
     const user = this.user$.value;
 
-    if (user === 'programador') {
+    if (user === 'programacion') {
       return [
         { label: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
         { label: 'Programación', path: '/programacion', icon: 'assignment' },
