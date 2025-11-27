@@ -27,13 +27,13 @@ public class DetalleRequerimiento {
     @Column(length = 255)
     private String observaciones;
 
-    @Column
+    @Column(name = "created_by")
     private Long createdBy;
-    @Column
+    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private java.time.LocalDateTime updatedAt = java.time.LocalDateTime.now();
 
     public DetalleRequerimiento() {

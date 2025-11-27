@@ -92,8 +92,7 @@ export class AuthService {
     if (role === 'programacion' || user === 'programacion') {
       return [
         { label: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
-        { label: 'Programación', path: '/programacion', icon: 'assignment' },
-        { label: 'Distribución', path: '/distribucion', icon: 'local_shipping' }
+        { label: 'Programación', path: '/programacion', icon: 'assignment' }
       ];
     }
 

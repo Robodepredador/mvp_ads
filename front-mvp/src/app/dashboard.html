@@ -25,6 +25,14 @@
     </div>
   </section>
 
+  <section class="insights" *ngIf="stats.length">
+    <article class="insight-card" *ngFor="let stat of stats">
+      <p class="stat-label">{{ stat.label }}</p>
+      <h3>{{ stat.value }}</h3>
+      <span>{{ stat.meta }}</span>
+    </article>
+  </section>
+
   <section class="modules" *ngIf="userRole !== 'PROGRAMACION'">
     <header>
       <div>
@@ -72,4 +80,3 @@
     </ul>
   </section>
 </div>
-<p>dashboard works!</p>

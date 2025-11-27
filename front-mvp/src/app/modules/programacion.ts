@@ -20,7 +20,7 @@ interface DetalleRequerimiento {
 interface Requerimiento {
   id: number;
   estado: string;
-  detalles: DetalleRequerimiento[];
+  detalles?: DetalleRequerimiento[];
 }
 
 interface LoteProducto {
@@ -246,5 +246,23 @@ export class ProgramacionComponent implements OnInit {
 
   get programados(): number {
     return this.requerimientos.filter(req => req.estado === 'PROGRAMADO').length;
+  }
+
+  get totalDetallesSeleccionado(): number {
+    return this.requerimiento?.detalles?.length ?? 0;
+  }
+
+  get detallesCompletados(): number {
+    if (!this.requerimiento?.detalles) {
+      return 0;
+    }
+    return this.requerimiento.detalles.filter(det => this.isCompletado(det)).length;
+  }
+
+  get detallesPendientes(): number {
+    if (!this.requerimiento?.detalles) {
+      return 0;
+    }
+    return this.requerimiento.detalles.filter(det => !this.isCompletado(det)).length;
   }
 }

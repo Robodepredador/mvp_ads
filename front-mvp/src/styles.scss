@@ -1,16 +1,25 @@
 /* Fondo general */
 body {
-  background: #f5f7fa;
+  background: #f4f6fb;
   font-family: 'Roboto', sans-serif;
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
+  color: #0f172a;
 }
 
 /* Contenedor principal para las vistas */
 .page-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
+  width: min(1280px, calc(100% - 64px));
+  margin: 32px auto 64px;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    width: 100%;
+    margin: 16px auto 40px;
+    padding: 0 16px;
+  }
 }
 
 /* Títulos */

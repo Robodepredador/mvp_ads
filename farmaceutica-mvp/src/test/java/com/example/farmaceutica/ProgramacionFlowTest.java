@@ -2,6 +2,8 @@ package com.example.farmaceutica;
 
 import com.example.farmaceutica.domain.*;
 import com.example.farmaceutica.services.ProgramacionService;
+import com.example.farmaceutica.security.Usuario;
+import com.example.farmaceutica.security.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,12 +32,14 @@ class ProgramacionFlowTest {
     @Autowired
     private LoteProductoRepository loteRepo;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @Test
     void testFlujoCompletoProgramacion() {
         // 1. Setup: Crear datos de prueba
         Producto p1 = new Producto();
         p1.setNombre("Paracetamol 500mg");
-        p1.setCodigo("P001");
         p1.setPrecioReferencial(new java.math.BigDecimal("10.00"));
         p1 = productoRepo.save(p1);
 
@@ -46,10 +50,16 @@ class ProgramacionFlowTest {
         lote.setFechaVencimiento(java.time.LocalDate.now().plusYears(1));
         lote = loteRepo.save(lote);
 
+        Usuario usuario = new Usuario();
+        usuario.setUsername("tester");
+        usuario.setPassword("secret");
+        usuario.setRol("PROGRAMACION");
+        usuario.setActivo(true);
+        usuario = usuarioRepository.save(usuario);
+
         Requerimiento req = new Requerimiento();
         req.setEstado("PENDIENTE");
-        req.setPrioridad("ALTA");
-        req.setFechaSolicitud(java.time.LocalDateTime.now());
+        req.setUsuario(usuario);
         req = reqRepo.save(req);
 
         DetalleRequerimiento det = new DetalleRequerimiento();
@@ -71,8 +81,9 @@ class ProgramacionFlowTest {
         assertEquals("PARCIAL", reqParcial.getEstado());
 
         // 4. Intentar finalizar (debería fallar porque faltan 30)
+        final Long reqId = req.getId();
         assertThrows(IllegalStateException.class, () -> {
-            programacionService.finalizarProgramacion(req.getId());
+            programacionService.finalizarProgramacion(reqId);
         });
 
         // 5. Registrar decisión: Comprar los 30 restantes

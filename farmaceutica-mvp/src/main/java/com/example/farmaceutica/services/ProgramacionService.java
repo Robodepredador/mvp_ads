@@ -238,7 +238,7 @@ public class ProgramacionService {
                     det.getProducto().getNombre(),
                     det.getCantidad(),
                     det.getMotivoDecision(),
-                    det.getUpdatedAt()
+                    det.getCreatedAt()
             );
         }
 
@@ -249,7 +249,7 @@ public class ProgramacionService {
                     det.getProducto().getNombre(),
                     det.getCantidad(),
                     det.getMotivoDecision(),
-                    det.getUpdatedAt()
+                    det.getCreatedAt()
             );
         }
     }

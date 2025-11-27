@@ -31,13 +31,13 @@ public class MovimientoInventario {
 
     @Column(length = 255)
     private String observaciones;
-    @Column
+    @Column(name = "created_by")
     private Long createdBy;
-    @Column
+    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     public MovimientoInventario() {

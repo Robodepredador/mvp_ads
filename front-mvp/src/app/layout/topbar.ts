@@ -16,16 +16,14 @@ import { AuthService } from '../services/auth.service';
     </mat-toolbar>
   `,
   styles: [`
-    .spacer { flex: 1 1 auto; }
-    mat-toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    .spacer {
+      flex: 1 1 auto;
     }
   `]
 })
 export class TopbarComponent {
   constructor(private router: Router, private auth: AuthService) {}
+
   logout() {
     this.auth.logout();
     this.router.navigate(['/login']);

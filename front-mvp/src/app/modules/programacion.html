@@ -1,68 +1,196 @@
-<section class="programacion">
-  <aside class="panel cola">
-    <header>
+<div class="programacion-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Cadena operativa</p>
+      <h1>Programación de requerimientos</h1>
+      <p class="header-lead">
+        Supervisa la cola, asigna inventario disponible o genera compras desde un solo lugar.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button color="primary" (click)="cargarRequerimientos()" [disabled]="cargando">
+        <mat-icon>refresh</mat-icon>
+        Actualizar cola
+      </button>
+    </div>
+  </header>
+
+  <section class="programacion">
+    <aside class="panel cola">
+      <header>
       <div>
         <p class="eyebrow">Cola de atención</p>
         <h2>Requerimientos</h2>
       </div>
-      <button mat-stroked-button color="primary" (click)="cargarRequerimientos()" [disabled]="cargando">
-        <mat-icon>refresh</mat-icon>
-        Refrescar
-      </button>
-    </header>
+      </header>
 
-    <div class="req-list-container">
-      <div class="metrics">
-        <div>
-          <p>Pendientes</p>
-          <strong>{{ pendientes }}</strong>
-        </div>
-        <div>
-          <p>Parciales</p>
-          <strong>{{ parciales }}</strong>
-        </div>
-        <div>
-          <p>Programados</p>
-          <strong>{{ programados }}</strong>
-        </div>
-      </div>
-
-      <div *ngIf="!requerimientos.length && !cargando" class="empty">
-        No se encontraron requerimientos.
-      </div>
-
-      <ul class="req-list" *ngIf="requerimientos.length">
-        <li *ngFor="let req of requerimientos" [class.activo]="req.id === requerimiento?.id"
-          (click)="verDetalle(req.id)">
-          <div class="req-info">
-            <strong>#{{ req.id }}</strong>
-            <span class="estado" [ngClass]="req.estado?.toLowerCase()">{{ req.estado }}</span>
+      <div class="req-list-container">
+        <div class="metrics">
+          <div>
+            <p>Pendientes</p>
+            <strong>{{ pendientes }}</strong>
           </div>
-          <small>Detalles: {{ req.detalles?.length || 0 }}</small>
-        </li>
-      </ul>
-
-      <div class="guidance">
-        <h3>Cómo priorizar</h3>
-        <ol>
-          <li>Empieza por los requerimientos con más productos pendientes.</li>
-          <li>Decide primero los productos con inventario disponible.</li>
-          <li>Registra compras sólo cuando no exista stock asignable.</li>
-        </ol>
-      </div>
-    </div>
-  </aside>
-
-  <section class="panel detalle">
-    <ng-container *ngIf="requerimiento; else emptyDetalle">
-      <header>
-        <div>
-          <p class="eyebrow">Detalle</p>
-          <h2>Requerimiento #{{ requerimiento.id }}</h2>
-          <p>El detalle aparecerá aquí para que tomes decisiones de distribución o compra.</p>
+          <div>
+            <p>Parciales</p>
+            <strong>{{ parciales }}</strong>
+          </div>
+          <div>
+            <p>Programados</p>
+            <strong>{{ programados }}</strong>
+          </div>
         </div>
+
+        <div *ngIf="!requerimientos.length && !cargando" class="empty">
+          No se encontraron requerimientos.
+        </div>
+
+        <ul class="req-list" *ngIf="requerimientos.length">
+          <li *ngFor="let req of requerimientos" [class.activo]="req.id === requerimiento?.id"
+              (click)="verDetalle(req.id)">
+            <div class="req-info">
+              <strong>#{{ req.id }}</strong>
+              <span class="estado" [ngClass]="req.estado.toLowerCase()">{{ req.estado }}</span>
+            </div>
+            <small>Detalles: {{ req.detalles?.length || 0 }}</small>
+          </li>
+        </ul>
+
+        <div class="guidance">
+          <h3>Cómo priorizar</h3>
+          <ol>
+            <li>Empieza por los requerimientos con más productos pendientes.</li>
+            <li>Decide primero los productos con inventario disponible.</li>
+            <li>Registra compras sólo cuando no exista stock asignable.</li>
+          </ol>
+        </div>
+      </div>
+    </aside>
+
+    <section class="panel detalle">
+      <ng-container *ngIf="requerimiento; else emptyDetalle">
+        <header>
+          <div>
+            <p class="eyebrow">Detalle</p>
+            <h2>Requerimiento #{{ requerimiento!.id }}</h2>
+            <p>Revisa cada producto y toma una decisión de distribución o compra.</p>
+          </div>
+          <span class="estado-chip" [ngClass]="requerimiento!.estado.toLowerCase()">
+            {{ requerimiento!.estado }}
+          </span>
+        </header>
+
+        <div class="detalle-meta">
+          <div>
+            <p>Total productos</p>
+            <strong>{{ totalDetallesSeleccionado }}</strong>
+          </div>
+          <div>
+            <p>Programados</p>
+            <strong>{{ detallesCompletados }}</strong>
+          </div>
+          <div>
+            <p>Pendientes</p>
+            <strong>{{ detallesPendientes }}</strong>
+          </div>
+        </div>
+
+        <div class="detalle-table" *ngIf="totalDetallesSeleccionado; else sinDetalles">
+          <div class="detalle-header">
+            <span>Producto</span>
+            <span>Estado</span>
+            <span>Distribuir</span>
+            <span>Comprar</span>
+          </div>
+
+          <div class="detalle-row" *ngFor="let det of requerimiento!.detalles || []">
+            <div class="producto">
+              <h4>{{ det.producto?.nombre || 'Producto sin nombre' }}</h4>
+              <small>ID {{ det.producto?.id || 'N/D' }}</small>
+              <span class="stock-badge" *ngIf="det.producto">
+                <mat-icon>inventory_2</mat-icon>
+                Stock: {{ getStockTotal(det.producto.id) }}
+              </span>
+            </div>
+
+            <div class="cantidad">
+              <div class="progress-info">Solicitado: {{ det.cantidad }}</div>
+              <div class="progress-info">Programado: {{ getProgramado(det.producto?.id) }}</div>
+              <div class="progress-info">Pendiente: {{ getPendiente(det) }}</div>
+            </div>
+
+            <ng-container *ngIf="!isCompletado(det); else completadoTemplate">
+              <div class="decision">
+                <label for="lote-{{ det.id }}">Lote</label>
+                <select id="lote-{{ det.id }}" [(ngModel)]="formularios[det.id].loteId">
+                  <option [ngValue]="undefined">Selecciona un lote</option>
+                  <option *ngFor="let lote of lotesDe(det.producto?.id)" [ngValue]="lote.id">
+                    {{ lote.numeroLote }} • {{ lote.cantidad }} u
+                  </option>
+                </select>
+
+                <label for="dist-{{ det.id }}">Cantidad a distribuir</label>
+                <input id="dist-{{ det.id }}" type="number" min="1"
+                       [max]="getPendiente(det)"
+                       [(ngModel)]="formularios[det.id].distCantidad">
+
+                <button mat-stroked-button color="primary"
+                        (click)="registrarDistribucion(det)"
+                        [disabled]="!formularios[det.id].distCantidad || !formularios[det.id].loteId">
+                  <mat-icon>local_shipping</mat-icon>
+                  Distribuir
+                </button>
+              </div>
+
+              <div class="decision">
+                <label for="compra-{{ det.id }}">Cantidad a comprar</label>
+                <input id="compra-{{ det.id }}" type="number" min="1"
+                       [max]="getPendiente(det)"
+                       [(ngModel)]="formularios[det.id].compraCantidad">
+
+                <button mat-raised-button color="accent"
+                        (click)="registrarCompra(det)"
+                        [disabled]="!formularios[det.id].compraCantidad">
+                  <mat-icon>shopping_cart</mat-icon>
+                  Comprar
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <ng-template #completadoTemplate>
+          <div class="decision">
+            <p class="progress-info">
+              Producto totalmente programado.
+            </p>
+          </div>
         </ng-template>
+
+        <ng-template #sinDetalles>
+          <div class="empty-state">
+            <mat-icon>assignment_late</mat-icon>
+            <p>Este requerimiento aún no tiene detalles.</p>
+          </div>
+        </ng-template>
+
+        <div class="acciones-final">
+          <button mat-raised-button color="primary"
+                  (click)="finalizarRequerimiento()"
+                  [disabled]="finalizando || !requerimiento">
+            <mat-icon>task_alt</mat-icon>
+            Finalizar requerimiento
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-template #emptyDetalle>
+        <div class="empty-state">
+          <mat-icon>find_in_page</mat-icon>
+          <p>Selecciona un requerimiento para ver su detalle.</p>
+        </div>
+      </ng-template>
+    </section>
   </section>
-</section>
+</div>
 
 <div class="mensaje toast" *ngIf="mensaje">{{ mensaje }}</div>

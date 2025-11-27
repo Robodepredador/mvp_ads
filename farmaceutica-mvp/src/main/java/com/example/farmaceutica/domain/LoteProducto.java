@@ -27,10 +27,10 @@ public class LoteProducto {
     @Column(nullable = false)
     private java.time.LocalDateTime fechaRecepcion = java.time.LocalDateTime.now();
 
-    @Column
+    @Column(name = "created_by")
     private Long createdBy;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 
     public LoteProducto() {

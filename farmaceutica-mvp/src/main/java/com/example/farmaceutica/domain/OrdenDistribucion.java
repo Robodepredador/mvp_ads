@@ -23,13 +23,13 @@ public class OrdenDistribucion {
     @Column(nullable = false, length = 30)
     private String estado = "PENDIENTE";
 
-    @Column
+    @Column(name = "created_by")
     private Long createdBy;
-    @Column
+    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "ordenDistribucion", cascade = CascadeType.ALL)

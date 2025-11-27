@@ -29,13 +29,13 @@ public class DetalleOrdenDistribucion {
     @Column(length = 255)
     private String motivoDecision;
 
-    @Column
+    @Column(name = "created_by")
     private Long createdBy;
-    @Column
+    @Column(name = "updated_by")
     private Long updatedBy;
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private java.time.LocalDateTime updatedAt = java.time.LocalDateTime.now();
 
     public DetalleOrdenDistribucion() {
@@ -80,6 +80,5 @@ public class DetalleOrdenDistribucion {
     public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
     public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
     // Getters y setters
 }
